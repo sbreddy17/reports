@@ -51,4 +51,12 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+    <repository>
+        <id>drucare-releases</id> <!-- Use the repository ID you've set in settings.xml -->
+        <url>http://18.60.46.89:8081/repository/drucare-releases/</url>
+    </repository>
+</distributionManagement>
+
+
 </project>
