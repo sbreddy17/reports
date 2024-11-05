@@ -8,7 +8,7 @@
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com</groupId>
+	<groupId>com.drucare</groupId>
 	<artifactId>reports</artifactId>
 	<version>1.0</version>
 	<name>drucare_project</name>
