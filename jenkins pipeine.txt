@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+               git branch: 'main', credentialsId: 'git_creds', url: 'https://github.com/sbreddy17/reports.git'
+            }
+        }
+        stage('maven build') {
+            steps {
+             sh 'mvn clean package'
+            }
+        }
+        stage('Upload to Nexus') {
+            steps {
+                sh 'mvn deploy'  // Deploy the JAR to Nexus
+            }
+        }
+    }
+}
+
+
+
+
+
+pipeline {
+    agent any
+    environment {
+        IS_FIRST_BUILD = true
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                 git branch: 'main', credentialsId: 'git_creds', url: 'https://github.com/sbreddy17/reports.git'
+            }
+        }
+        stage('Determine Version') {
+            steps {
+                script {
+                    // Check if a previous build exists in Nexus using Maven
+                    // If Nexus has artifacts with the same version, this isn't the first build
+                    try {
+                        sh 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout > currentVersion.txt'
+                        def version = readFile('currentVersion.txt').trim()
+
+                        // Replace this command with your logic to check if the version already exists in Nexus
+                        def versionExists = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://18.61.35.215:8081/repository/reports-releases-timestamp/com/drucare/reports/${version}/reports-${version}.jar", returnStatus: true) == 0
+
+                        if (versionExists) {
+                            IS_FIRST_BUILD = false
+                        }
+                    } catch (Exception e) {
+                        echo "Unable to check Nexus repository for previous builds."
+                    }
+                }
+            }
+        }
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    // If it's not the first build, add a timestamp to the version
+                    if (!IS_FIRST_BUILD) {
+                        def timestamp = new Date().format("yyyyMMdd-HHmm", TimeZone.getTimeZone('UTC'))
+                        def newVersion = "0.0.1-${timestamp}"
+                        
+                        // Temporarily set the new version with Maven
+                        sh "mvn versions:set -DnewVersion=${newVersion}"
+                    }
+
+                    // Deploy the artifact to Nexus
+                    sh 'mvn clean deploy'
+
+                    // Revert to original version (in case a new timestamped version was set)
+                    if (!IS_FIRST_BUILD) {
+                        sh "mvn versions:revert"
+                    }
+                }
+            }
+        }
+    }
+}
