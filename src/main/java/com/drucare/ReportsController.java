@@ -8,7 +8,7 @@ public class ReportsController {
 
 	@GetMapping("/")
 	public String welcome() {
-		return "Welcome to reports! one";
+		return "Welcome to reports! two";
 	}
 
 }
