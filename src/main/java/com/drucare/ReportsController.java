@@ -8,7 +8,7 @@ public class ReportsController {
 
 	@GetMapping("/")
 	public String welcome() {
-		return "Welcome to Ocyopus deploy!";
+		return "Welcome to Nexus deploy!";
 	}
 
 }
