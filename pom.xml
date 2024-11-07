@@ -54,7 +54,7 @@
 	<distributionManagement>
     <repository>
         <id>reports-releases-timestamp</id> <!-- Use the repository ID you've set in settings.xml -->
-        <url>http://18.61.35.215:8081/repository/reports-releases-timestamp</url>
+        <url>http://18.60.117.196:8081/repository/reports-releases-timestamp</url>
     </repository>
 </distributionManagement>
 
