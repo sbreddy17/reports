@@ -8,7 +8,7 @@ public class ReportsController {
 
 	@GetMapping("/")
 	public String welcome() {
-		return "Hello world from jar two";
+		return "Hello world from jar ONE";
 	}
 
 }
