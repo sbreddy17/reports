@@ -8,7 +8,7 @@ public class ReportsController {
 
 	@GetMapping("/")
 	public String welcome() {
-		return "Welcome to Nexus deploy!";
+		return "Hello world from jar one";
 	}
 
 }
